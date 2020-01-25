@@ -552,6 +552,34 @@ module Gitlab
       def upload_file(project : Int32 | String, file : File) : JSON::Any
         post("projects/#{project}/uploads", form: {"file" => file}).parse
       end
+
+      # Get a list of a project's snippets
+      #
+      # - param  [Int32, String] project The ID or name of a project. If using namespaced projects call make sure that the NAMESPACE/PROJECT_NAME is URL-encoded.
+      # - return [JSON::Any] List of snippets under a project.
+      #
+      # ```
+      # client.project_snippets(1)
+      # ```
+      def project_snippets(project : Int32) : JSON::Any
+        get("projects/#{project}/snippets").parse
+      end
+
+      # Get a list of a project's snippets
+      #
+      # - param  [Int32, String] project The ID or name of a project. If using namespaced projects call make sure that the NAMESPACE/PROJECT_NAME is URL-encoded.
+      # - return [JSON::Any] List of snippets under a project.
+      #
+      # ```
+      # client.project_snippet(1, 1)
+      # ```
+      def project_snippet(project : Int32, snippet : Int32) : JSON::Any
+        get("projects/#{project}/snippets/#{snippet}").parse
+      end
+
+      def add_project_snippet(project : Int32 | String, form : Hash = {} of String => String) : JSON::Any
+        post("projects/#{project}/snippets", form: form).parse
+      end
     end
   end
 end

@@ -379,4 +379,36 @@ describe Gitlab::Client::Project do
       unstarred_project["id"].as_i.should eq 3
     end
   end
+
+  describe ".project_snippets" do
+    it "should return a paginated response of snippets" do
+      stub_get("/projects/1/snippets", "project_snippets")
+      snippets = client.project_snippets(1)
+
+      snippets.should be_a JSON::Any
+      snippets.size.should eq 2
+      snippets[0]["title"].as_s.should eq "test"
+    end
+  end
+
+  describe ".project_snippet" do
+    it "should return information about the snippet" do
+      stub_get("/projects/1/snippets/1", "project_snippet")
+      snippets = client.project_snippet(1, 1)
+
+      snippets.should be_a JSON::Any
+      snippets["title"].as_s.should eq "test"
+    end
+  end
+
+  describe ".add_project_snippet" do
+    it "should return information about a created snippet" do
+      form = {"title" => "test", "file_name" => "add.rb", "content" => "test", "visibility": "public"}
+      stub_post("/projects/1/snippets", "project_snippet")
+      snippet = client.add_project_snippet(1, form)
+
+      snippet.should be_a JSON::Any
+      snippet["file_name"].should eq "add.rb"
+    end
+  end
 end
